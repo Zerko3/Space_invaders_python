@@ -3,15 +3,19 @@ from turtle import Turtle
 class Game_body():
   
     def __init__(self) -> None:
+            # self.shape = shape
+            # self.color = color
+            # self.generate_body(shape, color)
             pass
        
 
       
     # TODO:
     # 1. Make a class method for body
-    def generate_body(self,shape:str, color:str):
+    def generate_body(self,shape,color):
             new_body = Turtle(shape)
-            new_body.color(color)  
+            new_body.color(color) 
+           
           
     # 2. Make a class method for color
     # 3. Make a class method for size

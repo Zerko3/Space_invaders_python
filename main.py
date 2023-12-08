@@ -1,6 +1,6 @@
-from turtle import Turtle, Screen
+# from turtle import Turtle, Screen
 import body_generation
-import game_score
+import screen
 
 # TODO:
 # 1. Create a window of the game
@@ -15,7 +15,8 @@ import game_score
 
 # create user player
 user_body = body_generation.User_body()
-user_body.generate_body("turtle", "red")
+user_body.generate_body("triangle", "white")
+
 
 # create enemy body - comment out for now
 # enemy_body = body_generation.Enemy_body()
@@ -23,7 +24,9 @@ user_body.generate_body("turtle", "red")
 
 
 # create window
-scree_of_the_game = Screen()
+scree_of_the_game = screen.Screen_of_the_game()
 
-# Exit the game window
-scree_of_the_game.exitonclick()
+
+
+
+
