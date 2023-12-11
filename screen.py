@@ -10,10 +10,11 @@ class Screen_of_the_game():
     
     
     def __init__(self) -> None:
+
         self.create_screen()
         self.create_title()
         self.create_score_counter_text()
-        self.exit_screen()
+       
         
     def create_screen(self):
         self.new_screen = Screen()
