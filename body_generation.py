@@ -23,7 +23,6 @@ class Enemy_body():
     enemy_body = Turtle
     
     def __init__(self,shape,color,starting_position_x,starting_position_y) -> None:
-        print("GENERATE NEW ENEMY!")
         self.shape = shape
         self.color = color
         self.starting_position_y = starting_position_y
@@ -99,13 +98,17 @@ class Projectile():
         self.enemy = enemy
         self.generate_projectile()
     
+    def __del__(self):
+        print("DESTROYED PROJECTILE")
+    
+    
     def generate_projectile(self):
         self.new_shooting_projectile = self.starting_location.clone()
         self.new_shooting_projectile.shape("circle")
         self.new_shooting_projectile.color("red")
         self.new_shooting_projectile.setheading(_SET_HEAD_NORTH)
         
-        for _ in range(18):
+        for _ in range(16):
             self.new_shooting_projectile.forward(50)
             projectile_position =  self.new_shooting_projectile.pos()    
             
@@ -113,8 +116,12 @@ class Projectile():
                 self.new_shooting_projectile.hideturtle()
                 self.killed_enemy(hit_status=True)
                 break
-            else:
+            elif projectile_position[-1] > 350.00:
+                print("ABOVE")
+                self.new_shooting_projectile.hideturtle()
                 self.killed_enemy(hit_status=False)
+                break
+            else:
                 pass
                   
     def killed_enemy(self, hit_status):

@@ -60,6 +60,9 @@ class Screen_of_the_game():
             self.update_score_text(self.game_score) 
             self.enemy_body_instance.hide_enemy_turtle()
             
+            # delete projectile object
+            del p
+            
             # delete the enemy
             del self.enemy_body_instance 
             
