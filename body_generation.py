@@ -1,5 +1,6 @@
 from turtle import Turtle
 
+
 _PLAYER_MOVE_AMOUNT = 100
 _ENEMY_MOVE_AMOUNT = 50
 _MOVE_LEFT = 180
@@ -20,13 +21,18 @@ class Enemy_body():
     # later add a list of enemys
     enemys = []
     enemy_body = Turtle
-
     
-    def __init__(self,shape,color) -> None:
+    def __init__(self,shape,color,starting_position_x,starting_position_y) -> None:
+        print("GENERATE NEW ENEMY!")
         self.shape = shape
         self.color = color
+        self.starting_position_y = starting_position_y
+        self.starting_position_x = starting_position_x
         self.generate_body(shape,color)
         self.get_enemy_position()
+        
+    def __del__(self):
+        print("DESTROYED")
         
     def generate_body(self, shape, color):
         self.enemy_body = Turtle(shape)
@@ -36,11 +42,14 @@ class Enemy_body():
         self.enemy_body.setheading(_SET_ENEMY_HEAD_SOUTH)
         
         # randomize this later
-        self.enemy_body.setposition(_ENEMY_START_X_POSITION,_ENEMY_START_Y_POSITION)
+        self.enemy_body.setposition(self.starting_position_x,self.starting_position_y)
         self.enemy_body.showturtle()        
         
     def get_enemy_position(self):
         return self.enemy_body.pos()
+    
+    def hide_enemy_turtle(self):
+        self.enemy_body.hideturtle()
 
 
 class User_body():
@@ -75,23 +84,19 @@ class User_body():
         self.user_game_body.setheading(_SET_HEAD_NORTH)
         self.player_current_position = self.user_game_body.pos()
        
-    
-    # feed in projectile the location of the enemy
-    # 2. Make a class method for shooting
-    def user_shoot(self, enemy:tuple):
-        print(enemy) 
-        return Projectile(self.user_game_body, enemy)
+    def user_shoot(self, enemy_location:tuple):
+        return Projectile(self.user_game_body, enemy_location)
    
     
 class Projectile():
     
     new_shooting_projectile = Turtle
     enemy_hit = False
+    hit_state = False
     
     def __init__(self,starting_location:Turtle, enemy) -> None:
         self.starting_location = starting_location
         self.enemy = enemy
-        print("FROM PROJECTILE", enemy)
         self.generate_projectile()
     
     def generate_projectile(self):
@@ -100,26 +105,22 @@ class Projectile():
         self.new_shooting_projectile.color("red")
         self.new_shooting_projectile.setheading(_SET_HEAD_NORTH)
         
-        # shooting logic, getting y cor logic. GOTO is not the best solution to getting updated Y cor!
-        for _ in range(14):
+        for _ in range(18):
             self.new_shooting_projectile.forward(50)
             projectile_position =  self.new_shooting_projectile.pos()    
             
             if abs(projectile_position[-1] - self.enemy[-1]) < 3 and abs(projectile_position[0] - self.enemy[0]) < 3:
-                print("HIIIIIIIIIIIT")
-                self.player_hit_enemy(True)
-            # self.get_projectile_position()
-         
-            
-    def get_projectile_position(self):
-        return self.new_shooting_projectile.pos()
-    
-    
-    # get the input from main pass it in here return true or false, then give this method to for loop to brake it
-    def player_hit_enemy(self, status_of_hit:bool):
-        print(status_of_hit)
-        if status_of_hit:
-            self.new_shooting_projectile.hideturtle()
+                self.new_shooting_projectile.hideturtle()
+                self.killed_enemy(hit_status=True)
+                break
+            else:
+                self.killed_enemy(hit_status=False)
+                pass
+                  
+    def killed_enemy(self, hit_status):
+        if hit_status:
+            self.hit_state = True
         else:
-            self.enemy_hit = False
-      
+            self.hit_state = False
+            
+   

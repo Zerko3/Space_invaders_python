@@ -5,18 +5,13 @@ import screen
 GAME_MODE = True
 projectile = None
 
- # generate the user body and the enemy body
-enemy_body = body_generation.Enemy_body("turtle", "orange")
+# generate the user body and the enemy body
 user_body = body_generation.User_body("triangle", "white")
-# W
+enemy_body = body_generation.Enemy_body("turtle", "orange", 0, 200)
+screen_of_the_game = screen.Screen_of_the_game(user_body,enemy_body)
 
 # generate the screen of the game
-screen_of_the_game = screen.Screen_of_the_game(user_body,enemy_body)
 
 # call the mainloop of the game -> start the game here
 screen_of_the_game.new_screen.mainloop()
-
-# TODO:
-# 1. Add xcor and ycor for if statement
-# 2. Add more than one enemy
-# 3. Kill the enemy if I hit the enemy
+screen_of_the_game.update_screen()

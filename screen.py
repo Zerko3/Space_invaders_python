@@ -1,5 +1,7 @@
 from turtle import Turtle, Screen
 from body_generation import User_body, Enemy_body
+from random import randint
+
 
 _WINDOW_HEIGHT = 1000
 _WINDOW_WIDTH = 800
@@ -18,11 +20,14 @@ class Screen_of_the_game():
         self.create_screen()
         self.create_title()
         self.create_score_counter_text()
-        self.new_screen.ontimer(self.game_loop, 100)
+        self.new_screen.update()
+        self.new_screen.ontimer(self.game_loop, 1)
         self.new_screen.listen()
         self.new_screen.onkeypress(self.user_body_instance.user_movment_left, "a")
         self.new_screen.onkeypress(self.user_body_instance.user_movment_right, "d")
        
+    def update_screen(self):
+        self.new_screen.update()
         
     def create_screen(self):
         self.new_screen = Screen()
@@ -44,37 +49,54 @@ class Screen_of_the_game():
     
         # get the y and x cor
         enemy_curr_pos = self.enemy_body_instance.get_enemy_position()
-        print("ENEMY POS:", enemy_curr_pos)
         
         # Capture the projectile position
-        projectile = self.user_body_instance.user_shoot(enemy=enemy_curr_pos)
+        p = self.user_body_instance.user_shoot(enemy_location=enemy_curr_pos)
+                        
+        # logic for counter
+        if p.hit_state:
+            self.new_score_text.clear()
+            self.game_score += 1
+            self.update_score_text(self.game_score) 
+            self.enemy_body_instance.hide_enemy_turtle()
+            
+            # delete the enemy
+            del self.enemy_body_instance 
+            
+            random_starting_location_y = randint(0,3)
+            random_starting_location_x = randint(0,4)
+            
+            
+            possible_starting_locations_y = [200,250,300,350]
+            possible_starting_locations_x = [-100,0,100,200,300]
+            
+            starting_location_of_enemy_y = possible_starting_locations_y[random_starting_location_y]
+            
+            starting_location_of_enemy_x = possible_starting_locations_x[random_starting_location_x]
+            
+            # call the new enemy
+            self.enemy_body_instance = Enemy_body("turtle", "orange", starting_location_of_enemy_x,starting_location_of_enemy_y)
+            self.update_screen()
+        else:
+            pass
         
-        
-        if projectile is not None:
-            projectile_position = projectile.get_projectile_position()
-            print("USER POS:", projectile_position)
+        # update the screen and call back the loop
+        self.new_screen.ontimer(self.game_loop, 1)
+        # self.new_screen.ontimer(self.exit_screen, 1)
 
-            # here we check if the enemy is on the same Y axis and on the same X axis 
-            if projectile_position[-1] > enemy_curr_pos[-1] and projectile_position[0] == enemy_curr_pos[0]:
-                print("Hit!")
-                self.score_counter()
-                projectile.player_hit_enemy(status_of_hit=True)
-
-        # call this method when we exit the game
-        self.new_screen.ontimer(self.exit_screen, 100)
-        self.new_screen.ontimer(self.game_loop, 100)
-     
     def score_counter(self):
-        print("score_counter")
-        # self.new_score_text.clear()
+     
+        self.new_score_text.clear()
         self.game_score += 1
         self.update_score_text(self.game_score)
        
         
     def update_score_text(self,score):
-        print("update")
-        self.new_score_text.clear()
+        
+        self.new_score_text.color("white")
         self.new_score_text.write(arg=f"SCORE: {score}", move=False, align='center', font=('Arial', 20, 'normal'))
+        self.update_screen()
+        
         
       
     def exit_screen(self):
