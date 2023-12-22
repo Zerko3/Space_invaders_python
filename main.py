@@ -15,3 +15,5 @@ screen_of_the_game = screen.Screen_of_the_game(user_body,enemy_body)
 # call the mainloop of the game -> start the game here
 screen_of_the_game.new_screen.mainloop()
 screen_of_the_game.update_screen()
+
+

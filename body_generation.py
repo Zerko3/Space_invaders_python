@@ -12,16 +12,18 @@ _PLAYER_STARTING_X_POSITION = 0
 _END_OF_THE_SCREEN_ON_Y_CORR = 500
 _ENEMY_START_Y_POSITION = 200
 _ENEMY_CURRENT_Y_POSITION = 0
+_HIT_ZONE_VARIABLE = 3
+_MAXIMUM_DISTANCE_BEFORE_DESTROYING_PROJECTILE = 350.00
+_PROJECTILE_MOVE_AMOUNT = 50    
 
-# randomize this number later
-_ENEMY_START_X_POSITION = 0
+
 
 class Enemy_body():
 
     # later add a list of enemys
     enemys = []
     enemy_body = Turtle
-    
+
     def __init__(self,shape,color,starting_position_x,starting_position_y) -> None:
         self.shape = shape
         self.color = color
@@ -54,6 +56,8 @@ class Enemy_body():
 class User_body():
     
     user_game_body = Turtle
+    player_current_position_on_x = 0.0
+    ammo_box = [0,1,2,3,4]
 
     def __init__(self,shape,color) -> None:
         self.shape = shape
@@ -73,7 +77,9 @@ class User_body():
         self.user_game_body.setheading(_MOVE_LEFT)
         self.user_game_body.forward(_PLAYER_MOVE_AMOUNT)
         self.user_game_body.setheading(_SET_HEAD_NORTH)
-        self.player_current_position = self.user_game_body.pos()
+        # call for player movement
+        self.get_player_position()
+       
         
     
     def user_movment_right(self):
@@ -81,11 +87,25 @@ class User_body():
         self.user_game_body.setheading(_MOVE_RIGHT)
         self.user_game_body.forward(_PLAYER_MOVE_AMOUNT)
         self.user_game_body.setheading(_SET_HEAD_NORTH)
-        self.player_current_position = self.user_game_body.pos()
+        self.get_player_position()
        
     def user_shoot(self, enemy_location:tuple):
-        return Projectile(self.user_game_body, enemy_location)
+        
+        # 1. if len > 0 shoot
+        # 2. after shoot -= 1 in list
+        
+        if len(self.ammo_box) > 0:
+            
+            print(self.ammo_box)
+            # remove the last item from the array
+            self.ammo_box.pop()
+            print(self.ammo_box)
+            # if ammo than shoot
+            return Projectile(self.user_game_body, enemy_location)
    
+    def get_player_position(self):
+        self.player_current_position = self.user_game_body.pos()
+        self.player_current_position_on_x = self.player_current_position[0]
     
 class Projectile():
     
@@ -109,15 +129,14 @@ class Projectile():
         self.new_shooting_projectile.setheading(_SET_HEAD_NORTH)
         
         for _ in range(16):
-            self.new_shooting_projectile.forward(50)
+            self.new_shooting_projectile.forward(_PROJECTILE_MOVE_AMOUNT)
             projectile_position =  self.new_shooting_projectile.pos()    
             
-            if abs(projectile_position[-1] - self.enemy[-1]) < 3 and abs(projectile_position[0] - self.enemy[0]) < 3:
+            if abs(projectile_position[-1] - self.enemy[-1]) < _HIT_ZONE_VARIABLE and abs(projectile_position[0] - self.enemy[0]) < _HIT_ZONE_VARIABLE:
                 self.new_shooting_projectile.hideturtle()
                 self.killed_enemy(hit_status=True)
                 break
-            elif projectile_position[-1] > 350.00:
-                print("ABOVE")
+            elif projectile_position[-1] > _MAXIMUM_DISTANCE_BEFORE_DESTROYING_PROJECTILE:
                 self.new_shooting_projectile.hideturtle()
                 self.killed_enemy(hit_status=False)
                 break
