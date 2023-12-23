@@ -20,15 +20,13 @@ class Screen_of_the_game():
         self.create_screen()
         self.create_title()
         self.create_score_counter_text()
-        self.create_ammo_text()
+        self.create_ammo_text(self.user_body_instance.ammo_box)
         self.new_screen.update()
         self.new_screen.onkeypress(self.user_body_instance.user_movment_right, "d")
         self.new_screen.onkeypress(self.user_body_instance.user_movment_left, "a")
         self.new_screen.listen()
         self.new_screen.ontimer(self.game_loop, 1)
-        
-        
-        
+          
     def update_screen(self):
         self.new_screen.update()
         
@@ -48,15 +46,22 @@ class Screen_of_the_game():
         self.new_score_text.setposition(0,400)
         self.update_score_text(self.game_score)
         
-    def create_ammo_text(self):
+    def create_ammo_text(self, ammo_ammount):
+        
+        print("AMMO BOX:", ammo_ammount)
         self.new_ammo_text = Turtle()
         self.new_ammo_text.color("white")
         self.new_ammo_text.penup()
         self.new_ammo_text.hideturtle()
-        self.new_ammo_text.setposition(-300,400)
-        self.new_ammo_text.write(arg=f"|", move=False, align='center', font=('Arial', 20, 'normal'))
+        self.new_ammo_text.setposition(-300,400)          
+        self.new_ammo_text.write(arg=f"AMMO LEFT: {ammo_ammount}", move=False, align='center', font=('Arial', 20, 'bold'))    
         self.update_screen()
-      
+        
+    def update_ammo_text(self):
+        self.new_ammo_text.clear()
+        self.new_ammo_text.write(arg=f"AMMO LEFT: {self.user_body_instance.ammo_box}", move=False, align='center', font=('Arial', 20, 'bold')) 
+        
+        
     def game_loop(self):
         
         if self.user_body_instance.player_current_position_on_x < 200.0 and self.user_body_instance.player_current_position_on_x > -200.0:
@@ -76,6 +81,9 @@ class Screen_of_the_game():
         
         # Capture the projectile position
         p = self.user_body_instance.user_shoot(enemy_location=enemy_curr_pos)
+        
+        # call again to remove 1 ammo
+        self.update_ammo_text()
                         
         # logic for counter
         if p.hit_state:
@@ -83,7 +91,7 @@ class Screen_of_the_game():
             self.game_score += 1
             self.update_score_text(self.game_score) 
             self.enemy_body_instance.hide_enemy_turtle()
-            
+             
             # delete projectile object
             del p
             
@@ -128,8 +136,3 @@ class Screen_of_the_game():
     def exit_screen(self):
         # this needs to be the last thing PYTHON read for now. Since its read top down, if Python comes to this method it will "wait" till its finishes (the user clicks) so than the setup method wont run. If this is the last thing on here for now, the setup method will run normally!        
         self.new_screen.exitonclick()
-
-
-    
-# 1. if player pos is < than width we can move
-# 2. if player pos == widht then we cannot move 

@@ -2,16 +2,12 @@ from turtle import Turtle
 
 
 _PLAYER_MOVE_AMOUNT = 100
-_ENEMY_MOVE_AMOUNT = 50
 _MOVE_LEFT = 180
 _MOVE_RIGHT = 0
 _SET_HEAD_NORTH = 90
 _SET_ENEMY_HEAD_SOUTH = 270
 _PLAYER_STARTING_Y_POSITION = -400
 _PLAYER_STARTING_X_POSITION = 0
-_END_OF_THE_SCREEN_ON_Y_CORR = 500
-_ENEMY_START_Y_POSITION = 200
-_ENEMY_CURRENT_Y_POSITION = 0
 _HIT_ZONE_VARIABLE = 3
 _MAXIMUM_DISTANCE_BEFORE_DESTROYING_PROJECTILE = 350.00
 _PROJECTILE_MOVE_AMOUNT = 50    
@@ -19,9 +15,7 @@ _PROJECTILE_MOVE_AMOUNT = 50
 
 
 class Enemy_body():
-
-    # later add a list of enemys
-    enemys = []
+    
     enemy_body = Turtle
 
     def __init__(self,shape,color,starting_position_x,starting_position_y) -> None:
@@ -57,7 +51,7 @@ class User_body():
     
     user_game_body = Turtle
     player_current_position_on_x = 0.0
-    ammo_box = [0,1,2,3,4]
+    ammo_box = 5
 
     def __init__(self,shape,color) -> None:
         self.shape = shape
@@ -80,7 +74,6 @@ class User_body():
         # call for player movement
         self.get_player_position()
        
-        
     
     def user_movment_right(self):
         
@@ -91,19 +84,17 @@ class User_body():
        
     def user_shoot(self, enemy_location:tuple):
         
-        # 1. if len > 0 shoot
-        # 2. after shoot -= 1 in list
-        
-        if len(self.ammo_box) > 0:
-            
-            print(self.ammo_box)
-            # remove the last item from the array
-            self.ammo_box.pop()
-            print(self.ammo_box)
-            # if ammo than shoot
+        if self.ammo_box > 0:
+            self.ammo_box -= 1
             return Projectile(self.user_game_body, enemy_location)
+
+        if self.ammo_box == 0:
+            self.ammo_box = 5
+            return Projectile(self.user_game_body, enemy_location)
+        
    
     def get_player_position(self):
+        
         self.player_current_position = self.user_game_body.pos()
         self.player_current_position_on_x = self.player_current_position[0]
     
